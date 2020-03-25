@@ -19,6 +19,10 @@ const appendFunction = function (f1, f2) {
   }
 }
 
+const wrapFunction = function (f, fUp, fDown) {
+  return appendFunction(prependFunction(f, fUp), fDown)
+}
+
 const appendToFunction = (object, property, fn) => {
   object[property] = appendFunction(object[property], fn)
 }
@@ -27,9 +31,15 @@ const prependToFunction = (object, property, fn) => {
   object[property] = prependFunction(object[property], fn)
 }
 
+const wrapToFunction = (object, property, fUp, fDown) => {
+  object[property] = wrapFunction(object[property], fUp, fDown)
+}
+
 module.exports = {
   prependFunction,
   appendFunction,
+  wrapFunction,
   appendToFunction,
-  prependToFunction
+  prependToFunction,
+  wrapToFunction
 }
