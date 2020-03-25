@@ -1,6 +1,9 @@
 const prependFunction = function (f1, f2) {
   return function (...args) {
-    f2.call(this, ...args)
+    const ret = f2.call(this, ...args)
+    if (ret instanceof Promise) {
+      return ret.then(() => f1.call(this, ...args))
+    }
     return f1.call(this, ...args)
   }
 }
@@ -8,22 +11,10 @@ const prependFunction = function (f1, f2) {
 const appendFunction = function (f1, f2) {
   return function (...args) {
     const ret = f1.call(this, ...args)
+    if (ret instanceof Promise) {
+      return ret.then(() => f2.call(this, ...args)).then(() => ret)
+    }
     f2.call(this, ...args)
-    return ret
-  }
-}
-
-const prependFunctionAsync = function (f1, f2) {
-  return async function (...args) {
-    await f2.call(this, ...args)
-    return f1.call(this, ...args)
-  }
-}
-
-const appendFunctionAsync = function (f1, f2) {
-  return async function (...args) {
-    const ret = await f1.call(this, ...args)
-    await f2.call(this, ...args)
     return ret
   }
 }
@@ -36,21 +27,9 @@ const prependToFunction = (object, property, fn) => {
   object[property] = prependFunction(object[property], fn)
 }
 
-const appendToAsyncFunction = (object, property, fn) => {
-  object[property] = appendFunctionAsync(object[property], fn)
-}
-
-const prependToAsyncFunction = (object, property, fn) => {
-  object[property] = prependFunctionAsync(object[property], fn)
-}
-
 module.exports = {
   prependFunction,
   appendFunction,
-  prependFunctionAsync,
-  appendFunctionAsync,
   appendToFunction,
-  prependToFunction,
-  appendToAsyncFunction,
-  prependToAsyncFunction
+  prependToFunction
 }

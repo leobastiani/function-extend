@@ -1,27 +1,19 @@
 jest.useFakeTimers()
 
 const {
-  prependFunction,
   appendFunction,
-  prependFunctionAsync,
-  appendFunctionAsync,
   appendToFunction,
-  prependToFunction,
-  appendToAsyncFunction,
-  prependToAsyncFunction
+  prependFunction,
+  prependToFunction
 } = require('./')
 
 const { isPromisePending } = require('promise-status-async')
 
 it('methods are defined', () => {
-  expect(prependFunction).toBeInstanceOf(Function)
   expect(appendFunction).toBeInstanceOf(Function)
-  expect(prependFunctionAsync).toBeInstanceOf(Function)
-  expect(appendFunctionAsync).toBeInstanceOf(Function)
   expect(appendToFunction).toBeInstanceOf(Function)
+  expect(prependFunction).toBeInstanceOf(Function)
   expect(prependToFunction).toBeInstanceOf(Function)
-  expect(appendToAsyncFunction).toBeInstanceOf(Function)
-  expect(prependToAsyncFunction).toBeInstanceOf(Function)
 })
 
 describe('sync', () => {
@@ -107,7 +99,7 @@ describe('async', () => {
     }
     await runTimers(object.first(1, 2, 3))
 
-    appendToAsyncFunction(object, 'first', second)
+    appendToFunction(object, 'first', second)
 
     expect(await runTimers(object.first(4, 5, 6))).toBe(1)
     expect(object.i).toBe(602)
@@ -120,7 +112,7 @@ describe('async', () => {
     }
     await runTimers(object.first(1, 2, 3))
 
-    prependToAsyncFunction(object, 'first', second)
+    prependToFunction(object, 'first', second)
 
     expect(await runTimers(object.first(4, 5, 6))).toBe(1)
     expect(object.i).toBe(736)
