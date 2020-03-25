@@ -1,7 +1,7 @@
 const prependFunction = function (f1, f2) {
   return function (...args) {
     const ret = f2.call(this, ...args)
-    if (ret instanceof Promise) {
+    if (typeof ret === 'object' && 'then' in ret) {
       return ret.then(() => f1.call(this, ...args))
     }
     return f1.call(this, ...args)
@@ -11,7 +11,7 @@ const prependFunction = function (f1, f2) {
 const appendFunction = function (f1, f2) {
   return function (...args) {
     const ret = f1.call(this, ...args)
-    if (ret instanceof Promise) {
+    if (typeof ret === 'object' && 'then' in ret) {
       return ret.then(() => f2.call(this, ...args)).then(() => ret)
     }
     f2.call(this, ...args)
