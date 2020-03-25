@@ -1,0 +1,21 @@
+{
+  "name": "function-extend",
+  "dependencies": {
+    "modern-node": "2.7.0"
+  },
+  "author": "Leobastiani <leogbastiani@gmail.com>",
+  "repository": "https://github.com/leobastiani/function-extend",
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "modern test",
+    "format": "modern format",
+    "lint": "modern lint",
+    "precommit": "modern precommit"
+  },
+  "devDependencies": {
+    "promise-status-async": "^1.1.11"
+  }
+}
