@@ -42,16 +42,19 @@ const wrapFunction = function (f, fUp, fDown) {
   return appendFunction(prependFunction(f, fUp), fDown)
 }
 
+const setOnObject = (object, property, value) => {
+  Object.defineProperty(object, property, { value })
+}
 const appendToFunction = (object, property, fn) => {
-  object[property] = appendFunction(object[property], fn)
+  setOnObject(object, property, appendFunction(object[property], fn))
 }
 
 const prependToFunction = (object, property, fn) => {
-  object[property] = prependFunction(object[property], fn)
+  setOnObject(object, property, prependFunction(object[property], fn))
 }
 
 const wrapToFunction = (object, property, fUp, fDown) => {
-  object[property] = wrapFunction(object[property], fUp, fDown)
+  setOnObject(object, property, wrapFunction(object[property], fUp, fDown))
 }
 
 module.exports = {

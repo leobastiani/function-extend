@@ -222,3 +222,12 @@ describe('keep function keys', () => {
     expect(newFn()).toBe(1)
   })
 })
+
+it('works with [].push', () => {
+  const array = []
+  const pushCallback = jest.fn()
+  appendToFunction(array, 'push', pushCallback)
+  array.push(1)
+  expect(array).toEqual([1])
+  expect(pushCallback).toHaveBeenCalled()
+})
