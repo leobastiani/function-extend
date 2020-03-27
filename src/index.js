@@ -43,7 +43,10 @@ const wrapFunction = function (f, fUp, fDown) {
 }
 
 const setOnObject = (object, property, value) => {
-  Object.defineProperty(object, property, { value })
+  Object.defineProperty(object, property, {
+    writable: true,
+    value
+  })
 }
 const appendToFunction = (object, property, fn) => {
   setOnObject(object, property, appendFunction(object[property], fn))
