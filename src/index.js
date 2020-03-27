@@ -8,9 +8,11 @@ const isStop = ret => ret === Stop || ret instanceof Stop
 const isObject = ret =>
   (ret !== null && typeof ret === 'object') || ret instanceof String
 const hasThen = ret => isObject(ret) && 'then' in ret
+const copyKeys = (src, dest) =>
+  Object.setPrototypeOf(Object.assign(dest, src), Object.getPrototypeOf(src))
 
 const prependFunction = function (f1, f2) {
-  return function (...args) {
+  return copyKeys(f1, function (...args) {
     const ret = f2.call(this, ...args)
     if (isStop(ret)) {
       return ret.value
@@ -19,11 +21,11 @@ const prependFunction = function (f1, f2) {
       return ret.then(() => f1.call(this, ...args))
     }
     return f1.call(this, ...args)
-  }
+  })
 }
 
 const appendFunction = function (f1, f2) {
-  return function (...args) {
+  return copyKeys(f1, function (...args) {
     const ret = f1.call(this, ...args)
     if (isStop(ret)) {
       return ret.value
@@ -33,7 +35,7 @@ const appendFunction = function (f1, f2) {
     }
     f2.call(this, ...args)
     return ret
-  }
+  })
 }
 
 const wrapFunction = function (f, fUp, fDown) {

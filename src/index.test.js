@@ -201,3 +201,24 @@ describe.each`
     }
   })
 })
+
+describe('keep function keys', () => {
+  class Funktion extends Function {}
+  const fn = new Funktion('return 1')
+  fn.key1 = 1
+  fn.key2 = 2
+
+  it('appends', () => {
+    const newFn = appendFunction(fn, () => {})
+    expect(Object.keys(newFn)).toEqual(['key1', 'key2'])
+    expect(fn).toBeInstanceOf(Funktion)
+    expect(newFn()).toBe(1)
+  })
+
+  it('prepends', () => {
+    const newFn = prependFunction(fn, () => {})
+    expect(Object.keys(newFn)).toEqual(['key1', 'key2'])
+    expect(fn).toBeInstanceOf(Funktion)
+    expect(newFn()).toBe(1)
+  })
+})
