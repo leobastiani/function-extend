@@ -1,7 +1,21 @@
+class Stop {
+  constructor (value) {
+    this.value = value
+  }
+}
+
+const isStop = ret => ret === Stop || ret instanceof Stop
+const isObject = ret =>
+  (ret !== null && typeof ret === 'object') || ret instanceof String
+const hasThen = ret => isObject(ret) && 'then' in ret
+
 const prependFunction = function (f1, f2) {
   return function (...args) {
     const ret = f2.call(this, ...args)
-    if (typeof ret === 'object' && 'then' in ret) {
+    if (isStop(ret)) {
+      return ret.value
+    }
+    if (hasThen(ret)) {
       return ret.then(() => f1.call(this, ...args))
     }
     return f1.call(this, ...args)
@@ -11,7 +25,10 @@ const prependFunction = function (f1, f2) {
 const appendFunction = function (f1, f2) {
   return function (...args) {
     const ret = f1.call(this, ...args)
-    if (typeof ret === 'object' && 'then' in ret) {
+    if (isStop(ret)) {
+      return ret.value
+    }
+    if (hasThen(ret)) {
       return ret.then(() => f2.call(this, ...args)).then(() => ret)
     }
     f2.call(this, ...args)
@@ -41,5 +58,6 @@ module.exports = {
   wrapFunction,
   appendToFunction,
   prependToFunction,
-  wrapToFunction
+  wrapToFunction,
+  Stop
 }

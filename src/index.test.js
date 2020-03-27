@@ -6,7 +6,8 @@ const {
   wrapFunction,
   appendToFunction,
   prependToFunction,
-  wrapToFunction
+  wrapToFunction,
+  Stop
 } = require('./')
 
 const { isPromisePending } = require('promise-status-async')
@@ -18,6 +19,7 @@ it('methods are defined', () => {
   expect(appendToFunction).toBeInstanceOf(Function)
   expect(prependToFunction).toBeInstanceOf(Function)
   expect(wrapToFunction).toBeInstanceOf(Function)
+  expect(Stop).toBeInstanceOf(Function)
 })
 
 describe('sync', () => {
@@ -165,5 +167,37 @@ describe('async', () => {
 
     expect(await runTimers(object.first(4, 5, 6))).toBe(1)
     expect(object.i).toBe(11238)
+  })
+})
+
+const object = {}
+describe.each`
+  type        | stop                | result
+  ${'Any'}    | ${null}             | ${undefined}
+  ${'Class'}  | ${Stop}             | ${undefined}
+  ${'Object'} | ${new Stop(object)} | ${object}
+`('stops as $type', ({ stop, result }) => {
+  it('appends', () => {
+    const first = () => stop
+    const second = jest.fn()
+
+    const ret = appendFunction(first, second)()
+
+    expect(second).toHaveBeenCalledTimes(stop === null ? 1 : 0)
+    if (result) {
+      expect(ret === result).toBe(true)
+    }
+  })
+
+  it('prepends', () => {
+    const first = jest.fn()
+    const second = () => stop
+
+    const ret = prependFunction(first, second)()
+
+    expect(first).toHaveBeenCalledTimes(stop === null ? 1 : 0)
+    if (result) {
+      expect(ret === result).toBe(true)
+    }
   })
 })
